@@ -1,11 +1,6 @@
 from opencage.geocoder import OpenCageGeocode
 from tkinter import *
 
-from scipy.ndimage import label
-from tensorflow.python.ops.gen_control_flow_ops import enter
-from БРОНИРОВАНИЕ_2 import window
-
-
 def get_coordinates(city, key):
     try:
         geocoder = OpenCageGeocode(key)
@@ -20,26 +15,23 @@ def get_coordinates(city, key):
         return f"Возникла ошибка: {e}"
 
 
-def snow_coordinates():
+def show_coordinates():
     city = entry.get()
     coordinates = get_coordinates(city, key)
     label.config(text=f"Координаты города {city}: {coordinates}")
 
 
-
 key = 'd9089f23b93d4805a4cad19cd958cdf8'
 
-
-print()
 
 window=Tk()
 window.title("Координаты городов")
 window.geometry("200x200")
 
-enter = Entry()
-enter.pack()
+entry = Entry()
+entry.pack()
 
-button = Button(text= "Поиск координат", comanda=get_coordinates)
+button = Button(text="Поиск координат", command=show_coordinates)
 button.pack()
 label = Label(text= "Введите город и нажмите на кнопку")
 
