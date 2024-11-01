@@ -1,6 +1,9 @@
 from opencage.geocoder import OpenCageGeocode
 from tkinter import *
 
+from tornado.gen import Return
+
+
 def get_coordinates(city, key):
     try:
         geocoder = OpenCageGeocode(key)
@@ -15,24 +18,25 @@ def get_coordinates(city, key):
         return f"Возникла ошибка: {e}"
 
 
-def show_coordinates():
+def show_coordinates(event=None):
     city = entry.get()
     coordinates = get_coordinates(city, key)
-    label.config(text=f"Координаты города {city}: {coordinates}")
+    label.config(text=f"Координаты города {city}:\n {coordinates}")
 
 
-key = 'd9089f23b93d4805a4cad19cd958cdf8'
+key = "8f34e7c28e0d43b19f20c8fc0d09e4e9"
 
 
 window=Tk()
 window.title("Координаты городов")
-window.geometry("200x200")
+window.geometry("350x100")
 
 entry = Entry()
 entry.pack()
-
+entry.bind("<Return>", show_coordinates)
 button = Button(text="Поиск координат", command=show_coordinates)
 button.pack()
 label = Label(text= "Введите город и нажмите на кнопку")
+label.pack()
 
 window.mainloop()
