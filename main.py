@@ -1,7 +1,8 @@
-from bokeh.embed import components
-from nltk.sem.chat80 import country, region
+from locale import currency
+
 from opencage.geocoder import OpenCageGeocode
 from tkinter import *
+import webbrowser
 
 from tornado.gen import Return
 
@@ -14,12 +15,19 @@ def get_coordinates(city, key):
             lat = round(results[0]['geometry']['lat'], 2)
             lon = round(results[0]['geometry']['lng'], 2)
             country = results[0]['components']['country']
+            osm_url = f"https://www.openstreetmap.org/?mlat={lat}&mlon={lon}"
 
             if 'state' in results[0]['components']:
                 region = results[0]['components']['state']
-                return f"Широта: {lat}, Долгота: {lon} \n Страна: {country}.\n Регион: {region}"
+                return {
+                "coordinates": f"Широта: {lat}, Долгота: {lon} \n Страна: {country}.\n Регион: {region}.\nВалюта: {currency}.",
+                "map_url": osm_url
+                        }
             else:
-                return f"Широта: {lat}, Долгота: {lon} \n Страна: {country}."
+                return  {
+                "coordinates": f"Широта: {lat}, Долгота: {lon} \n Страна: {country}.",
+                "map_url": osm_url
+                        }
         else :
             return  "Город не найден"
     except Exception as e:
@@ -27,24 +35,35 @@ def get_coordinates(city, key):
 
 
 def show_coordinates(event=None):
+    global map_url
     city = entry.get()
-    coordinates = get_coordinates(city, key)
-    label.config(text=f"Координаты города {city}:\n {coordinates}")
+    result = get_coordinates(city, key)
+    label.config(text=f"Координаты города {city}:\n {result['coordinates']}")
+    map_url = result['map_url']
+
+def show_map():
+    if map_url:
+        webbrowser.open(map_url)
 
 
 key = "8f34e7c28e0d43b19f20c8fc0d09e4e9"
-
+map_url = ""
 
 window=Tk()
 window.title("Координаты городов")
-window.geometry("350x120")
+window.geometry("350x160")
 
 entry = Entry()
 entry.pack()
 entry.bind("<Return>", show_coordinates)
+
 button = Button(text="Поиск координат", command=show_coordinates)
 button.pack()
+
 label = Label(text= "Введите город и нажмите на кнопку")
 label.pack()
+
+map_button = Button(text="Показать карту", command=show_map)
+map_button.pack()
 
 window.mainloop()
