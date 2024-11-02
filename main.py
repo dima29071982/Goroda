@@ -2,8 +2,6 @@ from opencage.geocoder import OpenCageGeocode
 from tkinter import *
 import webbrowser
 
-
-
 def get_coordinates(city, key):
     try:
         geocoder = OpenCageGeocode(key)
@@ -32,6 +30,7 @@ def get_coordinates(city, key):
         return f"Возникла ошибка: {e}"
 
 
+
 def show_coordinates(event=None):
     global map_url
     city = entry.get()
@@ -45,7 +44,10 @@ def show_map():
 
 
 def delete():
-    entry.delete(0, END,)
+     global map_url
+     entry.delete(0, END)
+     label.config(text="Введите город и нажмите на кнопку")
+     map_url = None
 
 
 key = "8f34e7c28e0d43b19f20c8fc0d09e4e9"
